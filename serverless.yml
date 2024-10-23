@@ -1,0 +1,31 @@
+service: task-manager-service
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-south-1
+  environment:
+    MONGO_URI: ${env:MONGO_URI_PROD}
+
+  plugins:
+    - serverless-dotenv-plugin
+
+functions:
+  app:
+    handler: dist/app.handler
+    events:
+      - http:
+          path: /
+          method: any
+      - http:
+          path: /{proxy+}
+          method: any
+
+package:
+  exclude:
+    - node_modules/.bin/**
+    - src/**
+    - .serverless/**
+    - tsconfig.json
+    - package-lock.json
+    - dist/.serverless/**
